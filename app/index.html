@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Goo Happiness Meter</title>
+</head>
+<body>
+
+	<ul id="buttonList">
+		<li><a id="awesome" data-points="5" class="button" href="">:D Awesome</a></li>
+		<li><a id="good" data-points="4" class="button" href="">:) Good</a></li>
+		<li><a id="ok" data-points="3" class="button" href="">:| OK</a></li>
+		<li><a id="bad" data-points="2" class="button" href="">:( Bad</a></li>
+		<li><a id="terrible" data-points="1" class="button" href="">;( Terrible</a></li>
+	</ul>
+
+	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			var buttons = $('.button');
+			var buttonList = $('#buttonList');
+
+			buttons.click(function(e, el) {
+				e.preventDefault();
+				var el = $(this);
+
+				if(buttonList.hasClass('disabled')) {
+					// A request is already in progress
+					return;
+				}
+
+				// Prevent further input
+				buttonList.addClass('disabled');
+
+				var data = {
+					value: el.data('points'),
+					label: el.attr('id')
+				};
+
+				$.get('/api/1/hello', data)
+					.done(function(response) {
+						console.log(response);
+					})
+					.fail(function(response) {
+						console.log('FAIL');
+					})
+					.always(function(response) {
+						buttonList.removeClass('disabled');
+					});
+			});
+		});
+	</script>
+</body>
+</html>

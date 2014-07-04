@@ -1,0 +1,30 @@
+{
+  "name": "goo-happy-meter",
+  "version": "0.0.0",
+  "description": "A simple web app that collects happiness.",
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:marcusstenbeck/goo-happy-meter.git"
+  },
+  "keywords": [
+    "goo",
+    "happiness"
+  ],
+  "author": "marcusstenbeck",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/marcusstenbeck/goo-happy-meter/issues"
+  },
+  "homepage": "https://github.com/marcusstenbeck/goo-happy-meter",
+  "dependencies": {
+    "logfmt": "~1.1.2",
+    "express": "~4.4.5"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}

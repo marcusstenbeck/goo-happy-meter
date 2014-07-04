@@ -5,9 +5,30 @@ var app = express();
 
 app.use(logfmt.requestLogger());
 
-
-
+// Static file serving
 app.use(express.static(__dirname + '/app'));
+
+
+// Database
+
+var mongo = require('mongodb');
+var mongoUri = process.env.MONGOLAB_URI ||
+  process.env.MONGOHQ_URL ||
+  'mongodb://localhost/mydb';
+
+mongo.MongoClient.connect(mongoUri, function (err, db) {
+	if(!err) {
+		console.log('Connected to \'happiness_db\' database');
+		db.collection('happiness', {strict: true}, function(err, collection) {
+			if(err) {
+				console.log('The \'happiness\' collection does not exist');
+				console.log('Creating empty collection \'happiness\'');
+				
+				db.createCollection('happiness', function(err, collection) {});
+			}
+		});
+	}
+});
 
 
 
@@ -16,7 +37,24 @@ app.use(express.static(__dirname + '/app'));
 var apiPrefix = '/api/1';
 
 app.get(apiPrefix + '/hello', function(req, res) {
-  res.send('Gonna be an API here soon enough.');
+	var entry = {
+		timestamp: Date.now(),
+		value: req.query.value
+	};
+
+	// Try storing in the database
+	mongo.MongoClient.connect(mongoUri, function (err, db) {
+		db.collection('happiness', function(err, collection) {
+			collection.insert(entry, {w:1}, function(err, result) {
+				if(err) {
+					res.send({ error: 'An error has occured' });
+				} else {
+					console.log('Success', JSON.stringify(result[0]));
+					res.send(result[0]);
+				}
+			});
+		});
+	});
 });
 
 
@@ -29,18 +67,3 @@ app.listen(port, function() {
 });
 
 
-
-// Database
-
-var mongo = require('mongodb');
-
-var mongoUri = process.env.MONGOLAB_URI ||
-  process.env.MONGOHQ_URL ||
-  'mongodb://localhost/mydb';
-
-mongo.Db.connect(mongoUri, function (err, db) {
-  db.collection('mydocs', function(er, collection) {
-    collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
-    });
-  });
-});

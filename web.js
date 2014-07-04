@@ -36,7 +36,7 @@ mongo.MongoClient.connect(mongoUri, function (err, db) {
 
 var apiPrefix = '/api/1';
 
-app.get(apiPrefix + '/hello', function(req, res) {
+app.get(apiPrefix + '/happiness', function(req, res) {
 	var entry = {
 		timestamp: Date.now(),
 		value: req.query.value
@@ -52,6 +52,18 @@ app.get(apiPrefix + '/hello', function(req, res) {
 					console.log('Success', JSON.stringify(result[0]));
 					res.send(result[0]);
 				}
+			});
+		});
+	});
+});
+
+
+app.get('/dump', function(req, res) {
+	// Try storing in the database
+	mongo.MongoClient.connect(mongoUri, function (err, db) {
+		db.collection('happiness', function(err, collection) {
+			collection.find().toArray(function(err, items) {
+				res.send({message: 'success', items: items});
 			});
 		});
 	});

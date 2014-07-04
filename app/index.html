@@ -2,16 +2,69 @@
 <html>
 <head>
 	<title>Goo Happiness Meter</title>
+	<style type="text/css">
+		body {
+			margin: 30px auto 0;
+			text-align: center; 
+		}
+
+		#buttonList {
+			margin: 50px 0;
+			width: 100%;
+			text-align: center;
+			padding: 0;
+			list-style: none;
+			opacity: 1;
+			transition: opacity 0.2s;
+		}
+
+		#buttonList.disabled {
+			opacity: 0.2;
+		}
+
+		.button-list-item {
+			display: inline;
+		}
+
+		.button {
+			text-indent: -9999px;
+			display: inline-block;
+			width: 78px;
+			height: 78px;
+			margin: 20px;
+			background-image: url(http://clipartist.info/openclipart.org/SVG/portablejim/greyscale_smiley_set-400px.png);
+		}
+
+		.success, .fail {
+			opacity: 0;
+			transition: opacity 1s;
+		}
+
+		.success.show, .fail.show {
+			opacity: 1;
+		}
+
+		#awesome { background-position: -80px 0px; }
+		#good { background-position: 0px 0px; }
+		#ok { background-position: -160px -160px; }
+		#bad { background-position: -160px -80px; }
+		#terrible { background-position: -242px -80px; }
+	</style>
 </head>
 <body>
 
+	<h1>How do you feel?</h1>
+
 	<ul id="buttonList">
-		<li><a id="awesome" data-points="5" class="button" href="">:D Awesome</a></li>
-		<li><a id="good" data-points="4" class="button" href="">:) Good</a></li>
-		<li><a id="ok" data-points="3" class="button" href="">:| OK</a></li>
-		<li><a id="bad" data-points="2" class="button" href="">:( Bad</a></li>
-		<li><a id="terrible" data-points="1" class="button" href="">;( Terrible</a></li>
+		<li class="button-list-item"><a id="awesome" class="button" data-points="5" href="">Great</a></li>
+		<li class="button-list-item"><a id="good" class="button" data-points="4" href="">Good</a></li>
+		<li class="button-list-item"><a id="ok" class="button" data-points="3" href="">OK</a></li>
+		<li class="button-list-item"><a id="bad" class="button" data-points="2" href="">Bad</a></li>
+		<li class="button-list-item"><a id="terrible" class="button" data-points="1" href="">Terrible</a></li>
 	</ul>
+
+	<p class="success">Saved. Thanks!</p>
+	<p class="fail">Something went wrong, try again...</p>
 
 	<script src="jquery.min.js"></script>
 	<script type="text/javascript">
@@ -37,15 +90,27 @@
 					label: el.attr('id')
 				};
 
-				$.get('/api/1/hello', data)
+				$.get('/api/1/happiness', data)
 					.done(function(response) {
 						console.log(response);
+						
+						$('.success').addClass('show');
+						setTimeout(function() {
+							$('.success').removeClass('show');
+						}, 1000);
 					})
 					.fail(function(response) {
 						console.log(response);
+						
+						$('.fail').addClass('show');
+						setTimeout(function() {
+							$('.fail').removeClass('show');
+						}, 1000);
 					})
 					.always(function(response) {
-						buttonList.removeClass('disabled');
+						setTimeout(function() {
+							buttonList.removeClass('disabled');
+						}, 400);
 					});
 			});
 		});
